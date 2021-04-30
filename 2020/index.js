@@ -477,7 +477,7 @@ function cameraRoAni() {
     delay: 0.5,
     onComplete: () => {
       next.disabled = false;
-      if(index == 2){
+      if(index == meshNum + 1){
         console.log('onComplete: ');
         setTimeout(() => {
           showEnd();
@@ -502,7 +502,7 @@ function initEvent() {
     }
 
     console.log('index: ', index);
-    if (index == 1) { // 2
+    if (index == meshNum) { // 2
       next.style.display = "none";
     }
     const cube = mesh[index];
@@ -614,7 +614,7 @@ function showEnd() {
 
 function render() {
   renderer.render(scene, camera);
-  stats.update();
+  // stats.update();
 
   if (!isReady) checkIsReady();
 
@@ -678,7 +678,7 @@ function animation() {
 }
 
 function start() {
-  initStatus();
+  // initStatus();
   initThree();
   initScene();
   initCamera();
