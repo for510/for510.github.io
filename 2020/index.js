@@ -601,11 +601,20 @@ function initBgPoints() {
 function showEnd() {
   const endDiv = document.getElementById("end");
   endDiv.style.display = "block";
+  let opacity = 0;
+  const timer = setInterval(()=>{
+    if(opacity >= 1){
+      clearInterval(timer);
+    } else {
+      opacity += 0.05;
+      endDiv.style.opacity = opacity;
+    }
+  }, 500);
 }
 
 function render() {
   renderer.render(scene, camera);
-  // stats.update();
+  stats.update();
 
   if (!isReady) checkIsReady();
 
@@ -669,14 +678,12 @@ function animation() {
 }
 
 function start() {
-  // initStatus();
-  // initMeshMaterial();
+  initStatus();
   initThree();
   initScene();
   initCamera();
   initLight();
   initObject();
-  // showEnd();
 
   animation();
 }
