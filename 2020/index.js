@@ -370,7 +370,6 @@ function initPhotoEnv() {
   deleteObj(textMesh);
 
   renderer.setClearColor("rgb(255,255,247)", 0.9);
-  // scene.fog = new THREE.FogExp2( 0x000000, 0.0008 );
   if (!hasInitPhoto) initPhotoObject();
 }
 
@@ -402,8 +401,10 @@ function initMeshMaterial() {
 
 function initPhotoObject() {
   const next = document.getElementById("next");
+  next.innerHTML = 'Wait~'
+  next.style.display = "block";
   setTimeout(() => {
-    next.style.display = "block";
+    next.innerHTML = '点我吧~'
   }, 0);
 
   initEvent();
@@ -579,16 +580,7 @@ function initBgPoints() {
 
 function render() {
   renderer.render(scene, camera);
-  stats.update();
-
-  // if (!hasShowText) {
-  //   return showText();
-  // }
-
-  // if (hasShowTextAni && !hasShowTextAniHide) {
-  //   return showTextAni();
-  // }
-  // return;
+  // stats.update();
 
   if (!isReady) checkIsReady();
 
@@ -652,7 +644,7 @@ function animation() {
 }
 
 function start() {
-  initStatus();
+  // initStatus();
   initThree();
   initScene();
   initCamera();
