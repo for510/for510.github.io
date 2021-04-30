@@ -41,6 +41,8 @@ const hideMaterial = new THREE.MeshBasicMaterial({
 // 背景粒子动画
 let hasInitBgPoints = false;
 
+const materials4End = [];
+
 const domElement = document.getElementById("canvas-frame");
 
 function initStatus() {
@@ -374,8 +376,8 @@ function initPhotoEnv() {
 }
 
 function initMeshMaterial() {
+  const loader = new THREE.TextureLoader();
   for (let i = 0; i <= meshNum; i++) {
-    const loader = new THREE.TextureLoader();
     const materials = [];
     let seed = 0;
     for (let j = 0; j < 6; ++j) {
@@ -397,15 +399,24 @@ function initMeshMaterial() {
 
     meshMaterial.push(materials);
   }
+
+  const texture = loader.load('img/0-1.jpg');
+  materials4End.push(
+    new THREE.MeshBasicMaterial({
+      map: texture,
+    })
+  );
 }
 
 function initPhotoObject() {
   const next = document.getElementById("next");
   next.innerHTML = 'Wait~'
   next.style.display = "block";
+  next.disabled = true;
   setTimeout(() => {
     next.innerHTML = '点我吧~'
-  }, 0);
+    next.disabled = false;
+  }, 2000);
 
   initEvent();
   initBgPoints();
@@ -433,11 +444,11 @@ function initPhotoObject() {
     // 第一象限
     if (mesh[i].position.x > 0 && mesh[i].position.z > 0) {
       const tan = mesh[i].position.x / mesh[i].position.z;
-      rotateY = Math.atan(tan) + 3.14;
+      rotateY = Math.atan(tan) + Math.PI;
       // 第二象限
     } else if (mesh[i].position.x < 0 && mesh[i].position.z > 0) {
       const tan = mesh[i].position.z / mesh[i].position.x;
-      rotateY = 1.57 - Math.atan(tan);
+      rotateY = Math.PI * 0.5 - Math.atan(tan);
       // 三、四象限
     } else {
       const tan = mesh[i].position.x / mesh[i].position.z;
@@ -464,6 +475,15 @@ function cameraRoAni() {
   TweenMax.to(cube.rotation, 5, {
     y: cube.rotation.y + Math.PI * 1.5,
     delay: 0.5,
+    onComplete: () => {
+      next.disabled = false;
+      if(index == 2){
+        console.log('onComplete: ');
+        setTimeout(() => {
+          showEnd();
+        }, 1000);
+      }
+    }
   });
 }
 
@@ -471,6 +491,7 @@ function initEvent() {
   const next = document.getElementById("next");
 
   next.addEventListener("click", function () {
+    next.disabled = true;
 
     if (isFirstClick) {
       mesh.forEach((item) => {
@@ -480,8 +501,9 @@ function initEvent() {
       isFirstClick = false;
     }
 
-    if (index > meshNum) {
-      index = 0;
+    console.log('index: ', index);
+    if (index == 1) { // 2
+      next.style.display = "none";
     }
     const cube = mesh[index];
     let rotate = cube.rotation.y;
@@ -563,9 +585,7 @@ function initBgPoints() {
       blending: THREE.AdditiveBlending,
       depthTest: false,
       transparent: true,
-      // color: 0xde5361,
     });
-    // materials[i].color = ;
 
     const particles = new THREE.Points(geometry, materials[i]);
 
@@ -576,6 +596,11 @@ function initBgPoints() {
     scene.add(particles);
   }
   hasInitBgPoints = true;
+}
+
+function showEnd() {
+  const endDiv = document.getElementById("end");
+  endDiv.style.display = "block";
 }
 
 function render() {
@@ -645,11 +670,13 @@ function animation() {
 
 function start() {
   // initStatus();
+  // initMeshMaterial();
   initThree();
   initScene();
   initCamera();
   initLight();
   initObject();
+  // showEnd();
 
   animation();
 }
